@@ -115,13 +115,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\obj_core.cpp" />
     <ClCompile Include="..\..\src\obj_type.cpp" />
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\obj.hpp" />
-    <ClInclude Include="..\..\include\obj_core.hpp" />
     <ClInclude Include="..\..\include\obj_macro.hpp" />
     <ClInclude Include="..\..\include\obj_type.hpp" />
   </ItemGroup>

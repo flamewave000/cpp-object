@@ -6,25 +6,18 @@ using namespace std;
 using namespace obj;
 
 
-class walks {
-protected:
-	walks() {}
-public:
-	virtual void walk() = 0;
-};
-class eats {
-protected:
-	eats() {}
-public:
-	virtual void eat() = 0;
-};
+$protocol(walks) :
+	$iface(void, walk);
+$end
 
-class animal : public object, public walks, public eats {
+$protocol(eats) :
+	$iface(void, eat);
+$end
+
+class animal : $base, public walks, public eats {
 public:
-	animal() {
-		object::__reg_type<animal>(this);
-		object::__reg_protos(this, { proto_info<walks>(), proto_info<eats>() });
-	}
+	animal() { $(animal, typeof(walks), typeof(eats)); }
+public:
 	void walk() {
 		cout << "I have walked" << endl;
 	}
@@ -33,20 +26,52 @@ public:
 	}
 };
 
+class dog : public animal {
+public:
+	dog() { $(dog); }
+public:
+	void bark() { cout << "BARK!!" << endl; }
+};
+
+class cat : public animal {
+public:
+	cat() { $(cat); }
+public:
+	void meow() { cout << "meeoooow!!" << endl; }
+};
+
 
 int main() {
-
 	object * obj = new animal();
+	if (obj->instanceof(eats)) {
+		eats* tmp = obj->cast_as(eats);
+		tmp->eat();
+	}
+	if (obj->instanceof(walks)) {
+		obj->cast_as(walks)->walk();
+	}
+	delete obj;
 
-	//if (obj->instanceof(proto_info<walks>())) {
-	//	((walks*)obj)->walk();
-	//}
-	if (obj->instanceof(proto_info<eats>())) {
-		((eats*)obj)->eat();
+
+	animal * a = new dog();
+	if (a->instanceof(dog)) {
+		a->cast_as(dog)->bark();
 	}
-	if (obj->instanceof(proto_info<eats>())) {
-		((eats*)obj)->eat();
+	cat *c = a->cast_as(cat);
+	if (c != nullptr) {
+		c->meow();
 	}
+	delete a;
+
+
+	a = new cat();
+	if (a->instanceof(dog)) {
+		a->cast_as(dog)->bark();
+	}
+	if ((c = a->cast_as(cat)) != nullptr) {
+		c->meow();
+	}
+	delete a;
 
 	cout << "Press enter to continue..." << flush;
 	cin.get();
