@@ -1,6 +1,5 @@
 #pragma once
 
-
 /*registers the provided derived type as being the host class*/
 #define DERIVED(derived) this->__reg_type<derived>()
 /*registers the list of protocol std::type::info as being implemented by the host class*/

@@ -1,19 +1,18 @@
 #ifndef _OBJ_TYPE_HPP
 #define _OBJ_TYPE_HPP 1
 
-#ifndef _GLIBCXX_VECTOR
-#ifndef _VECTOR_
-#include <vector>
+#ifndef _GLIBCXX_UNORDERED_MAP
+#ifndef _UNORDERED_MAP_
+#include <unordered_map>
 #endif
 #endif
-#ifndef _GLIBCXX_MEMORY
-#ifndef _MEMORY_
-#include <memory>
-#endif
-#endif
+//#ifndef _GLIBCXX_MEMORY
+//#ifndef _MEMORY_
+//#include <memory>
+//#endif
+//#endif
 
 namespace obj {
-
 	class object;
 
 	/* wraps the info and relations for a single runtime type */
@@ -40,7 +39,7 @@ namespace obj {
 
 #pragma region constructors
 		public:
-			info(const uid id, const char * name, const bool &is_protocol) : _id(id), _name(name), _is_protocol(is_protocol) {}
+			info(const uid id, const char * name, const bool &is_protocol);
 #pragma endregion
 
 #pragma region properties
@@ -77,9 +76,10 @@ namespace obj {
 		/* the std::type::info for the runtime host class this std::type represents */
 		info _info;
 		/* the base std::type the host class inherits from; null if we are std::object */
-		const std::shared_ptr<type> _base;
+		//const std::shared_ptr<type> _base;
+		const type* _base;
 		/* the list of protocols the host class implements */
-		std::vector<info> _protocols;
+		std::unordered_map<info::uid, info> _protocols;
 #pragma endregion
 
 #pragma region properties
@@ -92,32 +92,18 @@ namespace obj {
 
 #pragma region constructors
 	private:
-		type(const info &type_info, const std::shared_ptr<type> &base) : _info(type_info), _base(base) {}
+		type(const info &type_info, const type* base);//const std::shared_ptr<type> &base);
 #pragma endregion
 
 #pragma region public methods
 	public:
 		/*returns true if the provided std::type::info is a protocol type and is
 		registered as being implemented by the host class; otherwise false*/
-		bool has_protocol(const info &proto_info) const {
-			if (proto_info._is_protocol) {
-				for (size_t c = 0, size = _protocols.size(); c < size; c++) {
-					if (_protocols[c] == proto_info) {
-						return true;
-					}
-				}
-				if (_base != nullptr) {
-					return const_cast<type*>(_base.get())->has_protocol(proto_info);
-				}
-			}
-			return false;
-		}
+		bool has_protocol(const info &proto_info) const;
 		/*returns true if the provided std::type::info is not a protocol and has the
 		same std::type::info::uid as the host class or any of its base classes;
 		otherwise false*/
-		inline bool has_class(const info &type_info) const {
-			return !type_info._is_protocol && (_info == type_info || (_base != nullptr && const_cast<type*>(_base.get())->has_class(type_info)));
-		}
+		bool has_class(const info &type_info) const;
 #pragma endregion
 
 #pragma region operator overloads
