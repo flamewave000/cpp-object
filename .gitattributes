@@ -5,3 +5,4 @@
 *.hpp eol=lf
 *.*proj* eol=crlf
 .git* eol=lf
+makefile eol=lf
