@@ -1,4 +1,4 @@
-#include "../include/obj_type.hpp"
+#include "obj_type.hpp"
 
 namespace obj
 {
